@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CST Gym</title>
+  <link rel="stylesheet" href="stt.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<style>
+    body{
+        padding-top: 140px;
+    }
+    .calories{
+        text-align: center;
+        padding-top: 20px;
+    }
+    select{
+        font-size: 15px;
+        padding: 5px;
+        width: 100%;
+        height: 45px;
+    }
+</style>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logoimg">
+      <img src="images/Screenshot 2025-04-14 235331.png" alt="gym">
+    </div>
+    <div class="logo">CST GYM</div>
+    <nav class="nav">
+      <a href="ass.html">Home</a>
+      <a href="aboutgym.html">About</a>
+      <a href="equipment.html">Equipment</a>
+      <a href="trainers.html">Trainers</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
+  <hr>
+  <section class="calories text-center py-5">
+    <h1>How much did you work</h1>
+    <p>Let's See your calories burned</p>
+  </section>
+  <section class="calorie-tracker">
+    <div class="tracker-wrapper">
+      <!-- Left: Input Form -->
+      <div class="tracker-form">
+        <h2>Calories Burned Tracker</h2>
+        <form id="calorieForm">
+          <label for="activityDate">Date:</label>
+          <input type="date" id="activityDate" required>
+
+          <label for="activity">Activity:</label>
+          <select id="activity" required>
+            <option value="running">Running</option>
+            <option value="jogging">Jogging</option>
+            <option value="cycling">Cycling</option>
+            <option value="swimming">Swimming</option>
+            <option value="walking">Walking</option>
+            <option value="jumpingRope">Jumping Rope</option>
+          </select>
+
+          <label for="duration">Duration (minutes):</label>
+          <input type="number" id="duration" placeholder="e.g. 30" required>
+
+          <button type="submit">Add</button>
+        </form>
+      </div>
+
+      <!-- Right: Pie Chart -->
+      <div class="tracker-chart">
+        <canvas id="calorieChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Calories burned per minute for each activity
+    const activityRates = {
+      running: 10,
+      jogging: 8,
+      cycling: 7,
+      swimming: 9,
+      walking: 4,
+      jumpingRope: 12
+    };
+
+    const dates = [];
+    const caloriesData = [];
+    const activityLabels = [];
+
+    const ctx = document.getElementById('calorieChart').getContext('2d');
+    const calorieChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: activityLabels,
+        datasets: [{
+          label: 'Calories Burned',
+          data: caloriesData,
+          backgroundColor: [
+            '#ff6384', '#36a2eb', '#ffcd56',
+            '#4bc0c0', '#9966ff', '#ff9f40'
+          ]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+
+    document.getElementById('calorieForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const date = document.getElementById('activityDate').value;
+      const activity = document.getElementById('activity').value;
+      const duration = parseInt(document.getElementById('duration').value);
+
+      if (activity && duration && activityRates[activity]) {
+        const caloriesBurned = activityRates[activity] * duration;
+        caloriesData.push(caloriesBurned);
+        activityLabels.push(`${activity} (${date})`);
+        
+        calorieChart.update();
+        this.reset();
+      }
+    });
+  </script>
+</body>
+</html>
